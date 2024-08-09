@@ -4,11 +4,8 @@ import Fade from "react-reveal";
 
 class Header extends Component {
   render() {
-    if (!this.props.data) return null;
 
-    const project = this.props.data.project;
-    const github = this.props.data.github;
-    const name = this.props.data.name;
+    const app_name = "Outline AI";
     const description  = 'Drag and drop your course outline to automatically extract important dates and add to ' +
         'your calendar';
 
@@ -32,20 +29,15 @@ class Header extends Component {
         <div className="row banner">
           <div className="banner-text">
             <Fade bottom>
-              <h1 className="responsive-headline">{name}</h1>
+              <h1 className="responsive-headline">{app_name}</h1>
             </Fade>
             <Fade bottom duration={1200}>
-              <h3>{description}.</h3>
+                <h3>{description}.</h3>
             </Fade>
             <hr />
             <Fade bottom duration={2000}>
               <ul className="social">
-                <a href={project} className="button btn project-btn">
-                  <i className="fa fa-book"></i>Project
-                </a>
-                <a href={github} className="button btn github-btn">
-                  <i className="fa fa-github"></i>Github
-                </a>
+
               </ul>
             </Fade>
           </div>
