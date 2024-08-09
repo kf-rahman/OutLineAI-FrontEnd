@@ -9,7 +9,8 @@ class Header extends Component {
     const project = this.props.data.project;
     const github = this.props.data.github;
     const name = this.props.data.name;
-    const description = this.props.data.description;
+    const description  = 'Drag and drop your course outline to automatically extract important dates and add to ' +
+        'your calendar';
 
     return (
       <header id="home">
@@ -24,35 +25,7 @@ class Header extends Component {
           </a>
 
           <ul id="nav" className="nav">
-            <li className="current">
-              <a className="smoothscroll" href="#home">
-                Home
-              </a>
-            </li>
-
-            <li>
-              <a className="smoothscroll" href="#about">
-                About
-              </a>
-            </li>
-
-            <li>
-              <a className="smoothscroll" href="#resume">
-                Resume
-              </a>
-            </li>
-
-            <li>
-              <a className="smoothscroll" href="#portfolio">
-                Works
-              </a>
-            </li>
-
-            <li>
-              <a className="smoothscroll" href="#contact">
-                Contact
-              </a>
-            </li>
+          // leaving this here in case I want to add a nav bar
           </ul>
         </nav>
 
