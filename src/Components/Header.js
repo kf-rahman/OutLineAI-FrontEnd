@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import ParticlesBg from "particles-bg";
 import Fade from "react-reveal";
+import DragNDrop from "./DragNDrop";
+
 
 class Header extends Component {
   render() {
@@ -33,7 +35,9 @@ class Header extends Component {
             </Fade>
             <Fade bottom duration={1200}>
                 <h3>{description}.</h3>
+
             </Fade>
+
             <hr />
             <Fade bottom duration={2000}>
               <ul className="social">

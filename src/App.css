@@ -1,0 +1,27 @@
+.button-container {
+  display: flex;
+  color: red;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  margin-top: 10px;
+    top: -40px;/* Add some space above the button */
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+  transition: background-color 0.3s ease;
+  top: -40px;
+}
+
+.upload-button:hover {
+  background-color: red
+}
