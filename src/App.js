@@ -10,11 +10,12 @@ class App extends Component {
     super(props);
     this.state = {
       foo: "bar",
-      resumeData: {},
       files: [],
-      textInput: "",  // New state to store the pasted text
+      textInput: "",
       loading: false,
-      createdEvents: []
+      createdEvents: [],
+      isAuthenticated: false,  // Track authentication status
+      authToken: null  // Store authentication token
     };
 
     ReactGA.initialize("UA-110570651-1");
@@ -29,19 +30,33 @@ class App extends Component {
     this.setState({ textInput: event.target.value });
   };
 
+  // Function to redirect the user to the backend auth endpoint
+  handleLogin = () => {
+    window.location.href = 'https://your-backend-url/auth';  // Redirect to your backend's /auth route
+  };
+
   // Function to handle submission of the text to the backend
   handleSubmitText = () => {
+    if (!this.state.isAuthenticated) {
+      alert("Please login before submitting the text.");
+      return;
+    }
+
     this.setState({ loading: true });
 
-    // Send the text to the backend
-    fetch('https://outline-ai-backend.vercel.app//extract-and-add-events', {
+    // Send the text to the backend with the authentication token
+    fetch('https://your-backend-url/extract-and-add-events', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.state.authToken}`  // Pass the authentication token
       },
       body: JSON.stringify({ text: this.state.textInput })  // Send the input text to the backend
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log("Response received: ", response);
+      return response.json();
+    })
     .then(data => {
       console.log("Created events:", data.createdEvents);
       this.setState({ createdEvents: data.createdEvents, loading: false });
@@ -52,10 +67,16 @@ class App extends Component {
     });
   };
 
-
-
-  setFiles = (files) => {
-    this.setState({ files });
+  // Mock function to check authentication (replace with actual token management)
+  componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (token) {
+      this.setState({
+        isAuthenticated: true,
+        authToken: token  // Store the token
+      });
+    }
   }
 
   render() {
@@ -65,22 +86,33 @@ class App extends Component {
           <FileUploadButton onFilesSelected={this.handleFilesSelected} />
         </div>
 
-        {/* New text input area for user to paste text */}
-        <div className="text-input-container">
-          <textarea
-            value={this.state.textInput}
-            onChange={this.handleTextChange}
-            placeholder="Paste your text here..."
-            rows="5"
-            cols="50"
-          />
-          <button onClick={this.handleSubmitText} disabled={this.state.loading}>
-            {this.state.loading ? "Submitting..." : "Submit Text"}
+        {/* Login button, shown if not authenticated */}
+        {!this.state.isAuthenticated ? (
+          <button onClick={this.handleLogin}>
+            Login with Google
           </button>
-        </div>
+        ) : (
+          <p>Authenticated</p>
+        )}
 
-        <Header data={this.state.resumeData.main} />
-        <Footer data={this.state.resumeData.main} />
+        {/* Text input and submit button, only accessible if authenticated */}
+        {this.state.isAuthenticated && (
+          <div className="text-input-container">
+            <textarea
+              value={this.state.textInput}
+              onChange={this.handleTextChange}
+              placeholder="Paste your text here..."
+              rows="5"
+              cols="50"
+            />
+            <button onClick={this.handleSubmitText} disabled={this.state.loading}>
+              {this.state.loading ? "Submitting..." : "Submit Text"}
+            </button>
+          </div>
+        )}
+
+        <Header />
+        <Footer />
       </div>
     );
   }
