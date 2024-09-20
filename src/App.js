@@ -32,7 +32,7 @@ class App extends Component {
 
   // Function to redirect the user to the backend auth endpoint
   handleLogin = () => {
-    window.location.href = 'https://your-backend-url/auth';  // Redirect to your backend's /auth route
+    window.location.href = 'https://outline-ai-backend.vercel.app/auth';  // Redirect to your backend's /auth route
   };
 
   // Function to handle submission of the text to the backend
@@ -45,7 +45,7 @@ class App extends Component {
     this.setState({ loading: true });
 
     // Send the text to the backend with the authentication token
-    fetch('https://your-backend-url/extract-and-add-events', {
+    fetch('https://outline-ai-backend.vercel.app/extract-and-add-events', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
