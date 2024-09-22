@@ -1,5 +1,5 @@
 import { google } from 'googleapis';
-
+import dotenv from 'dotenv';
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const oAuth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,

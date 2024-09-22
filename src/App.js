@@ -38,7 +38,7 @@ class App extends Component {
     this.setState({ loading: true });
 
     // Call the serverless function to extract dates and add events to Google Calendar
-    fetch('/api/extract-and-add', {
+    fetch('/api/extract_add_event', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
