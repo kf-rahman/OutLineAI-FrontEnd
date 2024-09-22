@@ -4,7 +4,6 @@ import "./App.css";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import FileUploadButton from "./Components/DragNDrop";
-import { fetchLLMOutput } from "./api/llmtest";  // Import the function to call the LLM from llmtest.js
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +12,7 @@ class App extends Component {
       files: [],
       textInput: "",
       loading: false,
-      llmOutput: ""  // Store LLM output
+      llmOutput: "",  // Store LLM output
     };
 
     ReactGA.initialize("UA-110570651-1");
@@ -28,20 +27,27 @@ class App extends Component {
     this.setState({ textInput: event.target.value });
   };
 
-  // Function to handle submission of the text to the LLM (through the function in llmtest.js)
+  // Function to handle submission of the text to the LLM (through serverless function)
   handleSubmitText = () => {
     this.setState({ loading: true });
 
     // Call the LLM API with the input text
-    fetchLLMOutput(this.state.textInput)
-      .then((output) => {
-        console.log("LLM Output:", output);
-        this.setState({ llmOutput: output, loading: false });
-      })
-      .catch((error) => {
-        console.error("Error fetching LLM output:", error);
-        this.setState({ loading: false });
-      });
+    fetch('/api/llmtest', {  // Make sure this matches your actual endpoint on Vercel
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: this.state.textInput })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("LLM Output:", data.output);
+      this.setState({ llmOutput: data.output, loading: false });
+    })
+    .catch((error) => {
+      console.error("Error fetching LLM output:", error);
+      this.setState({ loading: false });
+    });
   };
 
   render() {
