@@ -4,18 +4,16 @@ import "./App.css";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import FileUploadButton from "./Components/DragNDrop";
+import { fetchLLMOutput } from "./api/llmtest";  // Import the function to call the LLM from llmtest.js
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      foo: "bar",
       files: [],
       textInput: "",
       loading: false,
-      createdEvents: [],
-      isAuthenticated: false,  // Track authentication status
-      authToken: null  // Store authentication token
+      llmOutput: ""  // Store LLM output
     };
 
     ReactGA.initialize("UA-110570651-1");
@@ -30,54 +28,21 @@ class App extends Component {
     this.setState({ textInput: event.target.value });
   };
 
-  // Function to redirect the user to the backend auth endpoint
-  handleLogin = () => {
-    window.location.href = 'https://outline-ai-backend.vercel.app/auth';  // Redirect to your backend's /auth route
-  };
-
-  // Function to handle submission of the text to the backend
+  // Function to handle submission of the text to the LLM (through the function in llmtest.js)
   handleSubmitText = () => {
-    if (!this.state.isAuthenticated) {
-      alert("Please login before submitting the text.");
-      return;
-    }
-
     this.setState({ loading: true });
 
-    // Send the text to the backend with the authentication token
-    fetch('https://outline-ai-backend.vercel.app/extract-and-add-events', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.state.authToken}`  // Pass the authentication token
-      },
-      body: JSON.stringify({ text: this.state.textInput })  // Send the input text to the backend
-    })
-    .then(response => {
-      console.log("Response received: ", response);
-      return response.json();
-    })
-    .then(data => {
-      console.log("Created events:", data.createdEvents);
-      this.setState({ createdEvents: data.createdEvents, loading: false });
-    })
-    .catch(error => {
-      console.error("Error sending text to backend:", error);
-      this.setState({ loading: false });
-    });
-  };
-
-  // Mock function to check authentication (replace with actual token management)
-  componentDidMount() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    if (token) {
-      this.setState({
-        isAuthenticated: true,
-        authToken: token  // Store the token
+    // Call the LLM API with the input text
+    fetchLLMOutput(this.state.textInput)
+      .then((output) => {
+        console.log("LLM Output:", output);
+        this.setState({ llmOutput: output, loading: false });
+      })
+      .catch((error) => {
+        console.error("Error fetching LLM output:", error);
+        this.setState({ loading: false });
       });
-    }
-  }
+  };
 
   render() {
     return (
@@ -86,28 +51,25 @@ class App extends Component {
           <FileUploadButton onFilesSelected={this.handleFilesSelected} />
         </div>
 
-        {/* Login button, shown if not authenticated */}
-        {!this.state.isAuthenticated ? (
-          <button onClick={this.handleLogin}>
-            Login with Google
+        {/* Text input and submit button */}
+        <div className="text-input-container">
+          <textarea
+            value={this.state.textInput}
+            onChange={this.handleTextChange}
+            placeholder="Paste your text here..."
+            rows="5"
+            cols="50"
+          />
+          <button onClick={this.handleSubmitText} disabled={this.state.loading}>
+            {this.state.loading ? "Submitting..." : "Submit Text"}
           </button>
-        ) : (
-          <p>Authenticated</p>
-        )}
+        </div>
 
-        {/* Text input and submit button, only accessible if authenticated */}
-        {this.state.isAuthenticated && (
-          <div className="text-input-container">
-            <textarea
-              value={this.state.textInput}
-              onChange={this.handleTextChange}
-              placeholder="Paste your text here..."
-              rows="5"
-              cols="50"
-            />
-            <button onClick={this.handleSubmitText} disabled={this.state.loading}>
-              {this.state.loading ? "Submitting..." : "Submit Text"}
-            </button>
+        {/* Display the LLM output */}
+        {this.state.llmOutput && (
+          <div className="llm-output-container">
+            <h3>LLM Output:</h3>
+            <p>{this.state.llmOutput}</p>
           </div>
         )}
 
