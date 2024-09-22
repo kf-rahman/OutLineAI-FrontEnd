@@ -12,7 +12,8 @@ class App extends Component {
       files: [],
       textInput: "",
       loading: false,
-      llmOutput: "",  // Store LLM output
+      message: "",  // Store success/error message
+      isAuthenticated: false,  // Track if the user is authenticated
     };
 
     ReactGA.initialize("UA-110570651-1");
@@ -27,12 +28,17 @@ class App extends Component {
     this.setState({ textInput: event.target.value });
   };
 
-  // Function to handle submission of the text to the LLM (through serverless function)
+  // Redirect the user to the backend authentication endpoint
+  handleLogin = () => {
+    window.location.href = '/api/auth';  // Redirect to the server-side Google OAuth authentication
+  };
+
+  // Function to handle the submission of the text to the extract-and-add serverless function
   handleSubmitText = () => {
     this.setState({ loading: true });
 
-    // Call the LLM API with the input text
-    fetch('/api/llmtest', {  // Make sure this matches your actual endpoint on Vercel
+    // Call the serverless function to extract dates and add events to Google Calendar
+    fetch('/api/extract-and-add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,45 +47,72 @@ class App extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log("LLM Output:", data.output);
-      this.setState({ llmOutput: data.output, loading: false });
+      console.log("Created Events:", data.createdEvents);
+      this.setState({
+        message: 'Events added successfully!',
+        loading: false,
+      });
     })
     .catch((error) => {
-      console.error("Error fetching LLM output:", error);
-      this.setState({ loading: false });
+      console.error("Error adding events:", error);
+      this.setState({
+        message: 'Failed to add events.',
+        loading: false,
+      });
     });
   };
+
+  // Simulate the check for authentication (Replace with real auth token check if available)
+  componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");  // Assuming token comes from OAuth redirection
+
+    if (token) {
+      this.setState({ isAuthenticated: true });
+    }
+  }
 
   render() {
     return (
       <div className="App">
+        <Header />
+
         <div className="button-container">
           <FileUploadButton onFilesSelected={this.handleFilesSelected} />
         </div>
 
-        {/* Text input and submit button */}
-        <div className="text-input-container">
-          <textarea
-            value={this.state.textInput}
-            onChange={this.handleTextChange}
-            placeholder="Paste your text here..."
-            rows="5"
-            cols="50"
-          />
-          <button onClick={this.handleSubmitText} disabled={this.state.loading}>
-            {this.state.loading ? "Submitting..." : "Submit Text"}
-          </button>
-        </div>
-
-        {/* Display the LLM output */}
-        {this.state.llmOutput && (
-          <div className="llm-output-container">
-            <h3>LLM Output:</h3>
-            <p>{this.state.llmOutput}</p>
+        {/* Show login button if the user is not authenticated */}
+        {!this.state.isAuthenticated ? (
+          <div className="login-container">
+            <button onClick={this.handleLogin}>
+              Login with Google
+            </button>
           </div>
+        ) : (
+          <>
+            {/* Text input and submit button, only accessible if authenticated */}
+            <div className="text-input-container">
+              <textarea
+                value={this.state.textInput}
+                onChange={this.handleTextChange}
+                placeholder="Paste your text here..."
+                rows="5"
+                cols="50"
+              />
+              <button onClick={this.handleSubmitText} disabled={this.state.loading}>
+                {this.state.loading ? "Submitting..." : "Submit Text"}
+              </button>
+            </div>
+
+            {/* Display success/error message */}
+            {this.state.message && (
+              <div className="message-container">
+                <h3>{this.state.message}</h3>
+              </div>
+            )}
+          </>
         )}
 
-        <Header />
         <Footer />
       </div>
     );
