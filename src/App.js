@@ -54,7 +54,7 @@ class App extends Component {
       this.setState({ loading: true });
 
       try {
-        const response = await fetch('extract-and-add-events', {
+        const response = await fetch('https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/extract-and-add-events', {
           method: 'POST',
           mode: 'cors',
           headers: {
