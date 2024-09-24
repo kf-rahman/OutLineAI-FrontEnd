@@ -31,7 +31,7 @@ class App extends Component {
 
   // Login: Redirect to the backend auth route to initiate Google OAuth
   handleLogin = () => {
-    window.location.href = 'auth'; // Replace with actual backend URL
+    window.location.href = 'https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/auth'; // Replace with actual backend URL
   };
 
   // Handles changes in the textarea
