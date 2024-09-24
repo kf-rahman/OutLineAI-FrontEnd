@@ -101,27 +101,7 @@ class App extends Component {
             </div>
 
 
-              {/* Text input and submit button, only accessible if authenticated */}
-              <div className="text-input-container">
-                <textarea
-                  value={textInput}
-                  onChange={this.handleTextChange}
-                  placeholder="Paste your text here..."
-                  rows="5"
-                  cols="50"
-                />
-                <br />
-                <button onClick={this.handleSubmit} disabled={loading}>
-                  {loading ? 'Submitting...' : 'Submit Text'}
-                </button>
-              </div>
 
-              {/* Display success/error message */}
-              {message && (
-                <div className="message-container">
-                  <h3>{message}</h3>
-                </div>
-              )}
 
 
         </div>
