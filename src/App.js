@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css"; // Assuming this has your background and other design elements
 import Header from "./Components/Header"; // Header component
 import Footer from "./Components/Footer"; // Footer component
-
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 class App extends Component {
   constructor(props) {
     super(props);
@@ -17,23 +17,27 @@ class App extends Component {
 
   // Fetch the token (from URL or localStorage) once component is mounted
   componentDidMount() {
-    const params = new URLSearchParams(window.location.search);
-    console.log('logged in')
+  const params = new URLSearchParams(window.location.search);
+  const tokenFromURL = params.get("token");
+  const tokenFromStorage = localStorage.getItem("authToken");
 
-    const tokenFromURL = params.get("token");
-    console.log(tokenFromURL);
-    const tokenFromStorage = localStorage.getItem("authToken");
-
-    if (tokenFromURL) {
-      this.setState({ authToken: tokenFromURL, isAuthenticated: true });
-      localStorage.setItem("authToken", tokenFromURL);  // Save token for future use
-
-      // Clean the URL after extracting the token
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (tokenFromStorage) {
-      this.setState({ authToken: tokenFromStorage, isAuthenticated: true });
-    }
+  if (tokenFromURL) {
+    this.setState({ authToken: tokenFromURL, isAuthenticated: true }, () => {
+      console.log("Auth token from URL:", tokenFromURL);
+      console.log("isAuthenticated:", this.state.isAuthenticated);
+    });
+    localStorage.setItem("authToken", tokenFromURL);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (tokenFromStorage) {
+    this.setState({ authToken: tokenFromStorage, isAuthenticated: true }, () => {
+      console.log("Auth token from localStorage:", tokenFromStorage);
+      console.log("isAuthenticated:", this.state.isAuthenticated);
+    });
+  } else {
+    console.log("No token found.");
   }
+}
+
 
   // Login: Redirect to the backend auth route to initiate Google OAuth
   handleLogin = () => {
