@@ -35,7 +35,7 @@ class App extends Component {
 
   // Handles login by redirecting to the backend OAuth endpoint
   handleLogin = () => {
-    window.location.href = 'https://outline-ai-backend-lwf7g03uw-kf-rahmans-projects.vercel.app//auth';
+    window.location.href = 'https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/auth';
   };
 
   // Handles changes in the textarea
@@ -45,26 +45,37 @@ class App extends Component {
     });
   };
 
-  // Handle form submission for processing the text input (adjust as per your API)
+  // Handle form submission for processing the text input
   handleSubmit = async () => {
     const { textInput, authToken } = this.state;
 
-    try {
-      const response = await fetch('https://outline-ai-backend-lwf7g03uw-kf-rahmans-projects.vercel.app//extract-and-add-events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({ text: textInput }),
-      });
+    // If not authenticated, initiate OAuth flow
+    if (!authToken) {
+      this.handleLogin();
+      return;
+    }
 
-      const data = await response.json();
-      console.log('Response:', data);
-      alert('Events added successfully!');
-    } catch (error) {
-      console.error('Error submitting text:', error);
-      alert('Failed to add events');
+    // Proceed if authenticated
+    if (textInput.trim()) {
+      try {
+        const response = await fetch('https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/extract-and-add-events', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ text: textInput }),
+        });
+
+        const data = await response.json();
+        console.log('Response:', data);
+        alert('Events added successfully!');
+      } catch (error) {
+        console.error('Error submitting text:', error);
+        alert('Failed to add events');
+      }
+    } else {
+      alert('Please enter some text.');
     }
   };
 
@@ -74,7 +85,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="button-container">
-          {/* File upload component if you have it */}
+          {/* Placeholder for future FileUpload component */}
           {/* <FileUploadButton onFilesSelected={this.handleFilesSelected} /> */}
         </div>
 
