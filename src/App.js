@@ -1,93 +1,85 @@
-import React, { Component } from "react";
-import ReactGA from "react-ga";
-import "./App.css";
-import Header from "./Components/Header";
-import Footer from "./Components/Footer";
-import FileUploadButton from "./Components/DragNDrop";
+import React, { Component } from 'react';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      foo: "bar",
-      files: [],
-      textInput: "",
-      loading: false,
-      createdEvents: [],
-      isAuthenticated: false,  // Track authentication status
-      authToken: null  // Store authentication token
+      isAuthenticated: false,
+      authToken: null,
+      textInput: '',
     };
-
-    ReactGA.initialize("UA-110570651-1");
-    ReactGA.pageview(window.location.pathname);
   }
 
-  handleFilesSelected = (files) => {
-    console.log("Selected files:", files);
-  };
-
-  handleTextChange = (event) => {
-    this.setState({ textInput: event.target.value });
-  };
-
-  // Function to redirect the user to the backend auth endpoint
-  handleLogin = () => {
-    window.location.href = 'https://outline-ai-backend.vercel.app/auth';  // Redirect to your backend's /auth route
-  };
-
-  // Function to handle submission of the text to the backend
-  handleSubmitText = () => {
-    if (!this.state.isAuthenticated) {
-      alert("Please login before submitting the text.");
-      return;
-    }
-
-    this.setState({ loading: true });
-
-    // Send the text to the backend with the authentication token
-    fetch('https://outline-ai-backend.vercel.app/extract-and-add-events', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.state.authToken}`  // Pass the authentication token
-      },
-      body: JSON.stringify({ text: this.state.textInput })  // Send the input text to the backend
-    })
-    .then(response => {
-      console.log("Response received: ", response);
-      return response.json();
-    })
-    .then(data => {
-      console.log("Created events:", data.createdEvents);
-      this.setState({ createdEvents: data.createdEvents, loading: false });
-    })
-    .catch(error => {
-      console.error("Error sending text to backend:", error);
-      this.setState({ loading: false });
-    });
-  };
-
-  // Mock function to check authentication (replace with actual token management)
+  // When the component mounts, check if a token is in the URL or in localStorage
   componentDidMount() {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    let token = params.get('token');
+
+    console.log('Token from URL:', token); // Debugging token
+
+    // Check if token exists in localStorage if not in URL
+    if (!token) {
+      token = localStorage.getItem('authToken');
+    }
+
     if (token) {
       this.setState({
         isAuthenticated: true,
-        authToken: token  // Store the token
+        authToken: token,
       });
+
+      // Save token to localStorage if not already stored
+      localStorage.setItem('authToken', token);
     }
   }
 
+  // Handles login by redirecting to the backend OAuth endpoint
+  handleLogin = () => {
+    window.location.href = 'https://outline-ai-backend-lwf7g03uw-kf-rahmans-projects.vercel.app//auth';
+  };
+
+  // Handles changes in the textarea
+  handleTextChange = (e) => {
+    this.setState({
+      textInput: e.target.value,
+    });
+  };
+
+  // Handle form submission for processing the text input (adjust as per your API)
+  handleSubmit = async () => {
+    const { textInput, authToken } = this.state;
+
+    try {
+      const response = await fetch('https://outline-ai-backend-lwf7g03uw-kf-rahmans-projects.vercel.app//extract-and-add-events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ text: textInput }),
+      });
+
+      const data = await response.json();
+      console.log('Response:', data);
+      alert('Events added successfully!');
+    } catch (error) {
+      console.error('Error submitting text:', error);
+      alert('Failed to add events');
+    }
+  };
+
   render() {
+    const { isAuthenticated, textInput } = this.state;
+
     return (
       <div className="App">
         <div className="button-container">
-          <FileUploadButton onFilesSelected={this.handleFilesSelected} />
+          {/* File upload component if you have it */}
+          {/* <FileUploadButton onFilesSelected={this.handleFilesSelected} /> */}
         </div>
 
-        {/* Login button, shown if not authenticated */}
-        {!this.state.isAuthenticated ? (
+        {/* Show login button if not authenticated */}
+        {!isAuthenticated ? (
           <button onClick={this.handleLogin}>
             Login with Google
           </button>
@@ -95,24 +87,20 @@ class App extends Component {
           <p>Authenticated</p>
         )}
 
-        {/* Text input and submit button, only accessible if authenticated */}
-        {this.state.isAuthenticated && (
+        {/* Show text input and submit button only if authenticated */}
+        {isAuthenticated && (
           <div className="text-input-container">
             <textarea
-              value={this.state.textInput}
+              value={textInput}
               onChange={this.handleTextChange}
               placeholder="Paste your text here..."
               rows="5"
               cols="50"
             />
-            <button onClick={this.handleSubmitText} disabled={this.state.loading}>
-              {this.state.loading ? "Submitting..." : "Submit Text"}
-            </button>
+            <br />
+            <button onClick={this.handleSubmit}>Submit</button>
           </div>
         )}
-
-        <Header />
-        <Footer />
       </div>
     );
   }
