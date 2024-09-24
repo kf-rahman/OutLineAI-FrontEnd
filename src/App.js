@@ -18,7 +18,10 @@ class App extends Component {
   // Fetch the token (from URL or localStorage) once component is mounted
   componentDidMount() {
     const params = new URLSearchParams(window.location.search);
+    console.log('logged in')
+
     const tokenFromURL = params.get("token");
+    console.log(tokenFromURL);
     const tokenFromStorage = localStorage.getItem("authToken");
 
     if (tokenFromURL) {
@@ -99,9 +102,6 @@ class App extends Component {
             <div className="login-container">
               <button onClick={this.handleLogin}>Login</button>
             </div>
-
-
-
 
 
         </div>
