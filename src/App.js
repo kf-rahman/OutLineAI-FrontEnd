@@ -1,15 +1,14 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import "./App.css"; // Assuming this has your background and other design elements
 import Header from "./Components/Header"; // Header component
 import Footer from "./Components/Footer"; // Footer component
+import TextSubmitPage from "./TextSubmitPage"; // New page component
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      textInput: '',
-      message: '',
-      loading: false,
       authToken: null,  // Track authToken here
       isAuthenticated: false // Track login state
     };
@@ -37,99 +36,37 @@ class App extends Component {
     window.location.href = 'https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/auth'; // Replace with actual backend URL
   };
 
-  // Handles changes in the textarea
-  handleTextChange = (e) => {
-    this.setState({
-      textInput: e.target.value,
-    });
-  };
-
-  // Handle form submission for processing the text input
-  handleSubmit = async () => {
-    const { textInput, authToken } = this.state;
-
-    if (!authToken) {
-      alert('You are not authenticated. Please login.');
-      return;
-    }
-
-    if (textInput.trim()) {
-      this.setState({ loading: true });
-
-      try {
-        const response = await fetch('https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/extract-and-add-events', {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`  // Pass the token in the request headers
-          },
-          body: JSON.stringify({ text: textInput })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Response:', data);
-          this.setState({ message: 'Events added successfully!', loading: false });
-        } else {
-          this.setState({ message: 'Failed to add events.', loading: false });
-        }
-      } catch (error) {
-        console.error('Error submitting text:', error);
-        this.setState({ message: 'Failed to add events.', loading: false });
-      }
-    } else {
-      alert('Please enter some text.');
-    }
-  };
-
   render() {
-    const { textInput, message, loading} = this.state;
+    const { authToken, isAuthenticated } = this.state;
 
     return (
-      <div className="App">
-        {/* Header */}
-        <Header />
+      <Router>
+        <div className="App">
+          {/* Header */}
+          <Header />
 
-        {/* Main content */}
-        <div className="content">
-          <h1>Extract and Add Events</h1>
+          {/* Main content */}
+          <div className="content">
+            <h1>Welcome to the App</h1>
 
-          {/* Show login button if not authenticated */}
-
-            <div className="login-container">
-              <button onClick={this.handleLogin}>Login</button>
-            </div>
-
-
-              {/* Text input and submit button, only accessible if authenticated */}
-              <div className="text-input-container">
-                <textarea
-                  value={textInput}
-                  onChange={this.handleTextChange}
-                  placeholder="Paste your text here..."
-                  rows="5"
-                  cols="50"
-                />
-                <br />
-                <button onClick={this.handleSubmit} disabled={loading}>
-                  {loading ? 'Submitting...' : 'Submit Text'}
-                </button>
+            {/* Show login button if not authenticated */}
+            {!isAuthenticated ? (
+              <div className="login-container">
+                <button onClick={this.handleLogin}>Login</button>
               </div>
+            ) : (
+              <Navigate to="/submit-text" state={{ authToken }} /> // Redirect to the text submission page
+            )}
+          </div>
 
-              {/* Display success/error message */}
-              {message && (
-                <div className="message-container">
-                  <h3>{message}</h3>
-                </div>
-              )}
-
-
+          {/* Footer */}
+          <Footer />
         </div>
 
-        {/* Footer */}
-        <Footer />
-      </div>
+        <Routes>
+          <Route path="/submit-text" element={<TextSubmitPage />} />
+        </Routes>
+      </Router>
     );
   }
 }
