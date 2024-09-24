@@ -21,7 +21,7 @@ class App extends Component {
 
     if (textInput.trim()) {
       try {
-        const response = await fetch('https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/extract-and-add-events', {
+        const response = await fetch('/extract-and-add-eventss', {
           method: 'POST',
           mode: 'cors',
           headers: {
