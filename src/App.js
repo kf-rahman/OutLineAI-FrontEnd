@@ -4,39 +4,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isAuthenticated: false,
-      authToken: null,
       textInput: '',
     };
   }
-
-  // When the component mounts, check if a token is in the URL or in localStorage
-  componentDidMount() {
-    const params = new URLSearchParams(window.location.search);
-    let token = params.get('token');
-
-    console.log('Token from URL:', token); // Debugging token
-
-    // Check if token exists in localStorage if not in URL
-    if (!token) {
-      token = localStorage.getItem('authToken');
-    }
-
-    if (token) {
-      this.setState({
-        isAuthenticated: true,
-        authToken: token,
-      });
-
-      // Save token to localStorage if not already stored
-      localStorage.setItem('authToken', token);
-    }
-  }
-
-  // Handles login by redirecting to the backend OAuth endpoint
-  handleLogin = () => {
-    window.location.href = 'https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/auth';
-  };
 
   // Handles changes in the textarea
   handleTextChange = (e) => {
@@ -47,22 +17,14 @@ class App extends Component {
 
   // Handle form submission for processing the text input
   handleSubmit = async () => {
-    const { textInput, authToken } = this.state;
+    const { textInput } = this.state;
 
-    // If not authenticated, initiate OAuth flow
-    if (!authToken) {
-      this.handleLogin();
-      return;
-    }
-
-    // Proceed if authenticated
     if (textInput.trim()) {
       try {
         const response = await fetch('https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/extract-and-add-events', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({ text: textInput }),
         });
@@ -80,38 +42,28 @@ class App extends Component {
   };
 
   render() {
-    const { isAuthenticated, textInput } = this.state;
+    const { textInput } = this.state;
 
     return (
       <div className="App">
         <div className="button-container">
-          {/* Placeholder for future FileUpload component */}
+          {/* File upload component if you have it */}
           {/* <FileUploadButton onFilesSelected={this.handleFilesSelected} /> */}
         </div>
 
-        {/* Show login button if not authenticated */}
-        {!isAuthenticated ? (
-          <button onClick={this.handleLogin}>
-            Login with Google
-          </button>
-        ) : (
-          <p>Authenticated</p>
-        )}
+        <h1>Extract and Add Events</h1>
 
-        {/* Show text input and submit button only if authenticated */}
-        {isAuthenticated && (
-          <div className="text-input-container">
-            <textarea
-              value={textInput}
-              onChange={this.handleTextChange}
-              placeholder="Paste your text here..."
-              rows="5"
-              cols="50"
-            />
-            <br />
-            <button onClick={this.handleSubmit}>Submit</button>
-          </div>
-        )}
+        <div className="text-input-container">
+          <textarea
+            value={textInput}
+            onChange={this.handleTextChange}
+            placeholder="Paste your text here..."
+            rows="5"
+            cols="50"
+          />
+          <br />
+          <button onClick={this.handleSubmit}>Submit</button>
+        </div>
       </div>
     );
   }
