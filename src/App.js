@@ -27,15 +27,17 @@ class App extends Component {
           headers: {
             'Content-Type': 'application/json',
           },
+
           body: JSON.stringify({ text: textInput }),
         });
 
-
+        console.log(response)
         const data = await response.json();
         console.log('Response:', data);
         alert('Events added successfully!');
       } catch (error) {
         console.error('Error submitting text:', error);
+
         alert('Failed to add events');
       }
     } else {
