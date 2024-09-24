@@ -26,16 +26,14 @@ class App extends Component {
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
-          },
-
-          body: JSON.stringify({ text: textInput }),
+          }
         });
         console.log(response.headers.get('Content-Type')); // Should be 'application/json'
 
 
 
-        const data = await response.json();
-        console.log('Response:', data);
+        //const data = await response.json();
+        console.log('Response:', response);
         alert('Events added successfully!');
       } catch (error) {
         console.error('Error submitting text:', error);
