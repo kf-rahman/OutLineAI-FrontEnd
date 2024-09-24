@@ -23,6 +23,7 @@ class App extends Component {
       try {
         const response = await fetch('https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/extract-and-add-events', {
           method: 'POST',
+          mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
           },
