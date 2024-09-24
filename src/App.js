@@ -86,7 +86,7 @@ class App extends Component {
   };
 
   render() {
-    const { textInput, message, loading} = this.state;
+    const { isAuthenticated} = this.state;
 
     return (
       <div className="App">
@@ -95,16 +95,26 @@ class App extends Component {
 
         {/* Main content */}
         <div className="content">
-          <h1>Extract and Add Events</h1>
+          {!isAuthenticated ? (
+          <div className="login-container">
+            <button onClick={this.handleLogin}>Login</button>
+          </div>
+        ) : (
+          <div>
+            <h2>Welcome back! You are logged in.</h2>
+            <textarea
 
-          {/* Show login button if not authenticated */}
+              onChange={this.handleTextChange}
+              placeholder="Enter text to extract events"
+            />
+            <button onClick={this.handleSubmit} >
+            test
+            </button>
 
-            <div className="login-container">
-              <button onClick={this.handleLogin}>Login</button>
-            </div>
+          </div>
+        )}
+      </div>
 
-
-        </div>
 
         {/* Footer */}
         <Footer />
