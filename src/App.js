@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import "./App.css"; // Assuming this has your background and other design elements
 import Header from "./Components/Header"; // Header component
 import Footer from "./Components/Footer"; // Footer component
-import TextSubmitPage from "./TextSubmitPage"; // New page component
+import TextSubmitPage from "./Components/TextSubmit"; // New page component
 
 class App extends Component {
   constructor(props) {
