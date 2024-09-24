@@ -24,6 +24,9 @@ class App extends Component {
     if (tokenFromURL) {
       this.setState({ authToken: tokenFromURL, isAuthenticated: true });
       localStorage.setItem("authToken", tokenFromURL);  // Save token for future use
+
+      // Clean the URL after extracting the token
+      window.history.replaceState({}, document.title, window.location.pathname);
     } else if (tokenFromStorage) {
       this.setState({ authToken: tokenFromStorage, isAuthenticated: true });
     }
@@ -95,7 +98,7 @@ class App extends Component {
           {/* Show login button if not authenticated */}
           {!isAuthenticated ? (
             <div className="login-container">
-              <button onClick={this.handleLogin}>Login with Google</button>
+              <button onClick={this.handleLogin}>Login</button>
             </div>
           ) : (
             <>
