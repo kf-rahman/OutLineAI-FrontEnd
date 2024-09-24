@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css"; // Assuming this has your background and other design elements
 import Header from "./Components/Header"; // Header component
 import Footer from "./Components/Footer"; // Footer component
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+
 class App extends Component {
   constructor(props) {
     super(props);
