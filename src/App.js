@@ -36,7 +36,6 @@ class App extends Component {
         alert('Events added successfully!');
       } catch (error) {
         console.error('Error submitting text:', error);
-        console.error(textInput);
         alert('Failed to add events');
       }
     } else {
