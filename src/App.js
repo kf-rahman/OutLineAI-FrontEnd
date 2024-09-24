@@ -29,6 +29,7 @@ class App extends Component {
           body: JSON.stringify({ text: textInput }),
         });
 
+
         const data = await response.json();
         console.log('Response:', data);
         alert('Events added successfully!');
