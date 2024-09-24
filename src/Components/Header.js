@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import ParticlesBg from "particles-bg";
 import Fade from "react-reveal";
-import DragNDrop from "./DragNDrop";
 
 
 class Header extends Component {
