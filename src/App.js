@@ -37,7 +37,6 @@ class App extends Component {
     window.location.href = 'https://outline-ai-backend-cjk4b70nc-kf-rahmans-projects.vercel.app/auth'; // Replace with actual backend URL
   };
 
-  // Handles changes in the textarea
   handleTextChange = (e) => {
     this.setState({
       textInput: e.target.value,
