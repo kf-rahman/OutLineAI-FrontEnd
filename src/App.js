@@ -17,6 +17,7 @@ class App extends Component {
 
   // Fetch the token (from URL or localStorage) once component is mounted
   componentDidMount() {
+    console.log('TETETETTETETTE');
   const params = new URLSearchParams(window.location.search);
   const tokenFromURL = params.get("token");
   const tokenFromStorage = localStorage.getItem("authToken");
