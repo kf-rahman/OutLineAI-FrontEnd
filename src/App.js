@@ -16,11 +16,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('Component mounted');
+    console.log('TETETETTETETTE');
     const params = new URLSearchParams(window.location.search);
     const tokenFromURL = params.get("token");
     const tokenFromStorage = localStorage.getItem("authToken");
-
     if (tokenFromURL) {
       this.setState({ authToken: tokenFromURL, isAuthenticated: true }, () => {
         console.log("Auth token from URL:", tokenFromURL);
@@ -60,7 +59,7 @@ class App extends Component {
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
+            'Authorization': `Bearer ${authToken}` // This line ensures the token is sent
           },
           body: JSON.stringify({ text: textInput })
         });
@@ -81,7 +80,7 @@ class App extends Component {
   };
 
   render() {
-    const { isAuthenticated, loading, message } = this.state;
+    const { isAuthenticated } = this.state;
     return (
       <div className="App">
         <Header />
@@ -94,10 +93,9 @@ class App extends Component {
             <div>
               <h2>Welcome back! You are logged in.</h2>
               <textarea onChange={this.handleTextChange} placeholder="Enter text to extract events" />
-              <button onClick={this.handleSubmit} disabled={loading}>
-                {loading ? 'Processing...' : 'Extract and Add Events'}
+              <button onClick={this.handleSubmit}>
+                test
               </button>
-              {message && <p>{message}</p>}
             </div>
           )}
         </div>
