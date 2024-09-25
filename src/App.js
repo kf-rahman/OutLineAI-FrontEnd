@@ -42,7 +42,7 @@ class App extends Component {
 
   // Login: Redirect to the backend auth route to initiate Google OAuth
   handleLogin = () => {
-    window.location.href = 'https://outline-ai-backend-qa3nj5i3j-kf-rahmans-projects.vercel.app/auth'; // Replace with actual backend URL
+    window.location.href = 'https://outline-ai-backend.vercel.app/auth'; // Replace with actual backend URL
   };
 
   handleTextChange = (e) => {
@@ -64,7 +64,7 @@ class App extends Component {
       this.setState({ loading: true });
 
       try {
-        const response = await fetch('https://outline-ai-backend-qa3nj5i3j-kf-rahmans-projects.vercel.app/extract-and-add-events', {
+        const response = await fetch('https://outline-ai-backend.vercel.app/extract-and-add-events', {
           method: 'POST',
           mode: 'cors',
           headers: {

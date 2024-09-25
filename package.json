@@ -2,7 +2,7 @@
   "name": "reactniceresume",
   "version": "0.1.0",
   "private": true,
-  "proxy":"https://outline-ai-backend-eelgc18bi-kf-rahmans-projects.vercel.app",
+  "proxy":"https://outline-ai-backend.vercel.app/",
   "homepage": "./",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
