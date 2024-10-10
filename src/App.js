@@ -15,16 +15,33 @@ class App extends Component {
     };
   }
 
- componentDidMount() {
+componentDidMount() {
+  this.checkForToken();
+}
+
+checkForToken = () => {
   const params = new URLSearchParams(window.location.search);
   const tokenFromURL = params.get("token");
+  const tokenFromStorage = localStorage.getItem("authToken");
+
   if (tokenFromURL) {
     localStorage.setItem("authToken", tokenFromURL);
-    this.setState({ authToken: tokenFromURL, isAuthenticated: true });
-    window.history.replaceState({}, document.title, window.location.pathname);
-    setTimeout(() => this.forceUpdate(), 100); // This will force a re-render after updating state
+    this.setState({ authToken: tokenFromURL, isAuthenticated: true }, () => {
+      console.log("Auth token from URL:", tokenFromURL);
+      console.log("isAuthenticated:", this.state.isAuthenticated);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    });
+  } else if (tokenFromStorage) {
+    this.setState({ authToken: tokenFromStorage, isAuthenticated: true }, () => {
+      console.log("Auth token from localStorage:", tokenFromStorage);
+      console.log("isAuthenticated:", this.state.isAuthenticated);
+    });
+  } else {
+    console.log("No token found.");
+    this.setState({ isAuthenticated: false });
   }
 }
+
 
 
   handleLogin = () => {
@@ -69,30 +86,35 @@ class App extends Component {
     }
   };
 
-  render() {
-    const { isAuthenticated } = this.state;
-    return (
-      <div className="App">
-        <Header />
-        <div className="content">
-          {!isAuthenticated ? (
-            <div className="login-container">
-              <button onClick={this.handleLogin}>Login</button>
-            </div>
-          ) : (
-            <div>
-              <h2>Welcome back! You are logged in.</h2>
-              <textarea onChange={this.handleTextChange} placeholder="Enter text to extract events" />
-              <button onClick={this.handleSubmit}>
-                test
-              </button>
-            </div>
-          )}
-        </div>
-        <Footer />
+render() {
+  const { isAuthenticated, loading, message } = this.state;
+
+  console.log("Rendering App component");
+  console.log("isAuthenticated:", isAuthenticated);
+
+  return (
+    <div className="App">
+      <Header />
+      <div className="content">
+        {!isAuthenticated ? (
+          <div className="login-container">
+            <button onClick={this.handleLogin}>Login</button>
+          </div>
+        ) : (
+          <div>
+            <h2>Welcome back! You are logged in.</h2>
+            <textarea onChange={this.handleTextChange} placeholder="Enter text to extract events" />
+            <button onClick={this.handleSubmit}>Submit</button>
+            {loading && <p>Loading...</p>}
+            {message && <p>{message}</p>}
+          </div>
+        )}
       </div>
-    );
-  }
+      <Footer />
+    </div>
+  );
+}
+
 }
 
 export default App;
