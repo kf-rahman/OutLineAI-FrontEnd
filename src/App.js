@@ -15,27 +15,17 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {
-    console.log('TETETETTETETTE');
-    const params = new URLSearchParams(window.location.search);
-    const tokenFromURL = params.get("token");
-    const tokenFromStorage = localStorage.getItem("authToken");
-    if (tokenFromURL) {
-      this.setState({ authToken: tokenFromURL, isAuthenticated: true }, () => {
-        console.log("Auth token from URL:", tokenFromURL);
-        console.log("isAuthenticated:", this.state.isAuthenticated);
-      });
-      localStorage.setItem("authToken", tokenFromURL);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (tokenFromStorage) {
-      this.setState({ authToken: tokenFromStorage, isAuthenticated: true }, () => {
-        console.log("Auth token from localStorage:", tokenFromStorage);
-        console.log("isAuthenticated:", this.state.isAuthenticated);
-      });
-    } else {
-      console.log("No token found.");
-    }
+ componentDidMount() {
+  const params = new URLSearchParams(window.location.search);
+  const tokenFromURL = params.get("token");
+  if (tokenFromURL) {
+    localStorage.setItem("authToken", tokenFromURL);
+    this.setState({ authToken: tokenFromURL, isAuthenticated: true });
+    window.history.replaceState({}, document.title, window.location.pathname);
+    setTimeout(() => this.forceUpdate(), 100); // This will force a re-render after updating state
   }
+}
+
 
   handleLogin = () => {
     window.location.href = 'https://outline-ai-backend.vercel.app/auth';
