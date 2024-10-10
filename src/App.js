@@ -19,7 +19,7 @@ componentDidMount() {
   this.checkForToken();
 }
 
-checkForToken = () => {
+componentDidMount() {
   const params = new URLSearchParams(window.location.search);
   const tokenFromURL = params.get("token");
   const tokenFromStorage = localStorage.getItem("authToken");
@@ -29,7 +29,7 @@ checkForToken = () => {
     this.setState({ authToken: tokenFromURL, isAuthenticated: true }, () => {
       console.log("Auth token from URL:", tokenFromURL);
       console.log("isAuthenticated:", this.state.isAuthenticated);
-      window.history.replaceState({}, document.title, window.location.pathname);
+      window.history.replaceState({}, document.title, window.location.pathname); // Removes the token from the URL
     });
   } else if (tokenFromStorage) {
     this.setState({ authToken: tokenFromStorage, isAuthenticated: true }, () => {
@@ -38,9 +38,9 @@ checkForToken = () => {
     });
   } else {
     console.log("No token found.");
-    this.setState({ isAuthenticated: false });
   }
 }
+
 
 
 
